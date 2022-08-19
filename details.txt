@@ -1,0 +1,38 @@
+Cosas a tener en cuenta primer proyecto de LYM
+
+- No debemos tener en cuenta los enters a excepción del PROG y el GORP
+
+Details:
+- We assume that the start statement "PROG" and the end statement "GORP" are in their own line within the txt file
+
+
+
+
+Trash:
+# lines_new = []
+
+# for line in lines:
+#     subList = line.split(" ")
+#     lines_new.append(subList)
+
+# while('' in lines_new) :
+#     lines_new.remove('')
+
+
+# print(lines_new)
+
+
+
+
+
+
+
+if counter2 < len(line):
+                    reversed = line[::-1]
+                    cont = 0
+                    for char in reversed:
+                        if char == " ":
+                            reversed = reversed[0:cont]
+                            lista_final.append(reversed[::-1])
+                            break
+                        cont += 1
