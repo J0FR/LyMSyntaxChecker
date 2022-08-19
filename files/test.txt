@@ -13,12 +13,12 @@ PROC goNorth()
 PROC goWest()
 {
     if (canWalk(west, 1)) { walk(west,1) } fi
-}
+} CORP
 
 {
     go(3, 3);
     n = 6;
     putCB(2,1)
-}
+} CORP
 
 GORP

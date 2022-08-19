@@ -36,3 +36,25 @@ if counter2 < len(line):
                             lista_final.append(reversed[::-1])
                             break
                         cont += 1
+
+
+
+
+
+
+
+
+
+
+
+
+
+# .split(" ")
+
+# startStatement = lines.index("PROG")
+# endStatement = lines.index("GORP")
+
+# lines = lines[startStatement + 1:endStatement]
+
+# print(lines)
+# print(string)
