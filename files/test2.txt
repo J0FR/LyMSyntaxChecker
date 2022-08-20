@@ -5,7 +5,7 @@ PROC putCB(c, b)
     drop(c);
     free(b);
     walk(n)    
-} CORP
+}
 PROC goNorth()
 {
     while (canWalk(north, 1)) do { walk(north, 1) } od

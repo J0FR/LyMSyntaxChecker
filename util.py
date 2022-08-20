@@ -40,7 +40,11 @@ varGlobal = {
     "isfacing": "isfacing",
     "isValid": "isValid",
     "canWalk": "canWalk",
-    "not": "not"
+    "not": "not",
+    
+    # Prueba
+    "c": None,
+    "b": None,
     }  
 
 functionsGlobal = {
@@ -91,15 +95,20 @@ def parser(tockens: list):
     tockenNum = 0
     error = False
     
+    # Running program
+    theProgramIsRunning = True
+    
     # Last item verifier varChecker
     lastTockenComma = False
     lastTockenVar = False
     
     # Last item verifier existingFunctionsChecker 
     openParenthesesEFC = False
-    closeParenthesesEFC = False
     lastTockenCommaEFC = False
     lastTockenVarEFC = False
+    parameterNumber = 0
+    parameterTypeMatch = []
+    usingFunction = None
     
     # Working on processes
     workingOnVar = False
@@ -107,43 +116,95 @@ def parser(tockens: list):
     
     while tockenNum < len(tockens):
         currentTocken = tockens[tockenNum]
-        
-        # check variable declaration
-        if (workingOnVar == True) or (currentTocken == "var"):
-            if currentTocken == "var":
-                workingOnVar = True
-            else:
-                if lastTockenComma == True or lastTockenVar == False:
-                    valid = validVariableName(currentTocken)
-                    lastTockenVar = True
-                    lastTockenComma = False
-                    if valid == False:
-                        error = True
+        # print(currentTocken)
+        if theProgramIsRunning == False or (currentTocken == "{" and workingOnVar == False and wokingOnDeclaredFunctions == False):
+            print(currentTocken)
+            pass
+
+        else:
+            # check variable declaration
+            if (workingOnVar == True) or (currentTocken == "var"):
+                if currentTocken == "var":
+                    workingOnVar = True
                 else:
-                    if currentTocken == ";":
-                        workingOnVar = False
-                        lastTockenVar = False
+                    if lastTockenComma == True or lastTockenVar == False:
+                        valid = validVariableName(currentTocken)
+                        varGlobal[currentTocken] = None
+                        lastTockenVar = True
                         lastTockenComma = False
-                    elif currentTocken != ",":
-                        error = True
-                    lastTockenComma = True
-                    lastTockenVar = False
-                    
-        # check existing functions
-        if (wokingOnDeclaredFunctions == True) or (currentTocken in functionsGlobal.keys()):
-            if currentTocken in functionsGlobal.keys():
-                wokingOnDeclaredFunctions = True
-            else:
-                if openParenthesesEFC != True and currentTocken != "(":
-                    error = True
+                        if valid == False:
+                            error = True
+                    else:
+                        if currentTocken == ";":
+                            workingOnVar = False
+                            lastTockenVar = False
+                            lastTockenComma = False
+                        elif currentTocken != ",":
+                            error = True
+                            
+                        lastTockenComma = True
+                        lastTockenVar = False
+                        
+            # check existing functions
+            if (wokingOnDeclaredFunctions == True) or (currentTocken in functionsGlobal.keys()):
+                if currentTocken in functionsGlobal.keys():
+                    wokingOnDeclaredFunctions = True
+                    usingFunction = functionsGlobal[currentTocken]
+                    parameterTypeMatch = [0]*len(usingFunction)
+                    print(currentTocken)
+                    # print(usingFunction)
                 else:
-                    openParenthesesEFC = True
-                    
-                pass
-        
+                    if openParenthesesEFC == True:
+                        if lastTockenCommaEFC == True or lastTockenVarEFC == False:
+                            i = 0
+                            for function in usingFunction:
+                                if parameterNumber < len(function) and checkVarType(currentTocken, function[parameterNumber]):
+                                    parameterTypeMatch[i] += 1
+                                i += 1
+                            parameterNumber += 1
+                            lastTockenCommaEFC = False
+                            lastTockenVarEFC = True
+                                    
+                        else:
+                            if currentTocken == ")":
+                                working = 0
+                                pivot = 0
+                                
+                                #                 adsfasdfadsfasdfasdfasdfasdfasdfasdfasdfasdfasd
+                                
+                                print(parameterTypeMatch)
+                                print(usingFunction)
+                                
+                                while pivot < len(usingFunction):
+                                    if len(usingFunction[pivot]) <= parameterTypeMatch[pivot]:
+                                        working += 1
+                                    pivot += 1
+                                if working == 0:
+                                    error = True
+                                    
+                                wokingOnDeclaredFunctions = False
+                                openParenthesesEFC = False
+                                lastTockenVarEFC = False
+                                parameterNumber = 0
+                                parameterTypeMatch = []
+                                usingFunction = None
+                            elif currentTocken != ",":
+                                error = True
+                                
+                            lastTockenCommaEFC = True
+                            lastTockenVarEFC = False
+                    else:
+                        if currentTocken != "(":
+                            error = True
+                            
+                        openParenthesesEFC = True
+            
 
         if error == True:
+            print("esta mal")
             break
+            
+            
         tockenNum += 1
     
     return error
@@ -166,12 +227,14 @@ def getDictVal(valDict: dict, val):
         return valDict[val]
     except:
         return False
-            
+
 def checkVarType(val: str, val_type: str):
     result = False
     isNumberVal = isNumber(val)
     if isNumberVal == False:
         val = getDictVal(varGlobal, val)
+        if val == None:
+            return True
         if val == False:
             return False
         

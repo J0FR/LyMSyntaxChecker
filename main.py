@@ -18,5 +18,8 @@ def main(filename):
 
 filename = 'test2'
 result = main(filename)
-print(result)
+if result == False:
+    print(f"El programa esta bien :)")
+else:
+    print(f"El programa esta mal :(")
 
