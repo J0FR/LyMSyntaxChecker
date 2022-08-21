@@ -7,54 +7,7 @@ Details:
 
 
 
+colocar que dentro de funciones hayan variables locales
 
-Trash:
-# lines_new = []
+verificar a donde mando los valores y las verificacion de valores en diccionarios respectivos (que las variables no esten con las funciones)
 
-# for line in lines:
-#     subList = line.split(" ")
-#     lines_new.append(subList)
-
-# while('' in lines_new) :
-#     lines_new.remove('')
-
-
-# print(lines_new)
-
-
-
-
-
-
-
-if counter2 < len(line):
-                    reversed = line[::-1]
-                    cont = 0
-                    for char in reversed:
-                        if char == " ":
-                            reversed = reversed[0:cont]
-                            lista_final.append(reversed[::-1])
-                            break
-                        cont += 1
-
-
-
-
-
-
-
-
-
-
-
-
-
-# .split(" ")
-
-# startStatement = lines.index("PROG")
-# endStatement = lines.index("GORP")
-
-# lines = lines[startStatement + 1:endStatement]
-
-# print(lines)
-# print(string)

@@ -10,11 +10,12 @@ def main(filename):
     # Checks for PROG and GORP and limit the instructions
     tockens = u.programStartEnd(tockens)
     if tockens == False:
-        return False
+        return True
+    
+    # print(tockens)
         
     return u.parser(tockens)
     
-    # print(tockens)
 
 filename = 'test2'
 result = main(filename)

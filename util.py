@@ -3,7 +3,7 @@ import re
 """
 Reserved characters
 """
-reservedChars = [',', ';', '{', '}', '(', ')']
+reservedChars = [',', ';', '{', '}', '(', ')', '=']
 reservedNames = ["if", "else", "fi", "while", "do", "od", "PROG", "GORP", "var", "PROC", "CORP"]
 
 
@@ -35,6 +35,7 @@ varGlobal = {
     "get": "get",
     "free": "free",
     "pop": "pop",
+    
         
     # compFunctions
     "isfacing": "isfacing",
@@ -42,9 +43,6 @@ varGlobal = {
     "canWalk": "canWalk",
     "not": "not",
     
-    # Prueba
-    "c": None,
-    "b": None,
     }  
 
 functionsGlobal = {
@@ -58,6 +56,13 @@ functionsGlobal = {
         "get": [["int_type"]],
         "free": [["int_type"]],
         "pop": [["int_type"]],
+        "go": [["int_type"]],
+        
+        #compFunctions
+        "isfacing": [["o_type"]],
+        "isValid": [["functionsGlobal_type", "int_type"]],
+        "canWalk": [["o_type", "int_type"], ["d_type", "int_type"]],
+        "not": ["compFunction_type"]
     }
 
 compFunctions = {
@@ -110,19 +115,38 @@ def parser(tockens: list):
     parameterTypeMatch = []
     usingFunction = None
     
+    # Last item verifier creatingFunctionsChecker 
+    openParametersCFC = False
+    workingOnParametersCFC = False
+    lastTockenCommaCFC = False
+    lastTockenVarCFC = False
+    openCurlyBracketCFC = False
+    nameFunctionCFC = ""
+    workingOnBodyCFC = False
+    nextClose = False
+    
+    # verifier for conditionalsSyntaxChecker
+    openConditionalCSC = False
+    openInstructionsCSC = False
+    buildingConditionalCSC = False
+    buildingInstructionsCSC = False
+    closedParenthesesCSC = False
+    conditionalCheck = False
+    instructionCheckCSC = False
+    closedCurlyBracketsCSC = False
+    
+    
     # Working on processes
     workingOnVar = False
     wokingOnDeclaredFunctions = False
+    workingOnNewFunction = False
+    workingOnConditional = False
     
     while tockenNum < len(tockens):
         currentTocken = tockens[tockenNum]
-        # print(currentTocken)
-        if theProgramIsRunning == False or (currentTocken == "{" and workingOnVar == False and wokingOnDeclaredFunctions == False):
-            print(currentTocken)
-            pass
-
-        else:
-            # check variable declaration
+        if (currentTocken in reservedNames or currentTocken in varGlobal or isNumber(currentTocken)) or (currentTocken in reservedChars) or workingOnVar or workingOnParametersCFC or workingOnConditional:
+                
+                
             if (workingOnVar == True) or (currentTocken == "var"):
                 if currentTocken == "var":
                     workingOnVar = True
@@ -144,15 +168,27 @@ def parser(tockens: list):
                             
                         lastTockenComma = True
                         lastTockenVar = False
-                        
+                
+                
+                
             # check existing functions
+            
             if (wokingOnDeclaredFunctions == True) or (currentTocken in functionsGlobal.keys()):
                 if currentTocken in functionsGlobal.keys():
                     wokingOnDeclaredFunctions = True
                     usingFunction = functionsGlobal[currentTocken]
                     parameterTypeMatch = [0]*len(usingFunction)
-                    print(currentTocken)
-                    # print(usingFunction)
+                    
+                    nextTocken = tockens[tockenNum + 1]
+                    worksVoid = 0
+                    for i in usingFunction: 
+                        if len(i) == 0:
+                            worksVoid += 1
+                        else:
+                            worksVoid += 0
+                    if nextTocken != ")" and worksVoid > 0:
+                        wokingOnDeclaredFunctions = False
+                    
                 else:
                     if openParenthesesEFC == True:
                         if lastTockenCommaEFC == True or lastTockenVarEFC == False:
@@ -163,25 +199,17 @@ def parser(tockens: list):
                                 i += 1
                             parameterNumber += 1
                             lastTockenCommaEFC = False
-                            lastTockenVarEFC = True
-                                    
+                            lastTockenVarEFC = True      
                         else:
                             if currentTocken == ")":
                                 working = 0
                                 pivot = 0
-                                
-                                #                 adsfasdfadsfasdfasdfasdfasdfasdfasdfasdfasdfasd
-                                
-                                print(parameterTypeMatch)
-                                print(usingFunction)
-                                
                                 while pivot < len(usingFunction):
                                     if len(usingFunction[pivot]) <= parameterTypeMatch[pivot]:
                                         working += 1
                                     pivot += 1
                                 if working == 0:
-                                    error = True
-                                    
+                                    error = True  
                                 wokingOnDeclaredFunctions = False
                                 openParenthesesEFC = False
                                 lastTockenVarEFC = False
@@ -190,26 +218,206 @@ def parser(tockens: list):
                                 usingFunction = None
                             elif currentTocken != ",":
                                 error = True
-                                
                             lastTockenCommaEFC = True
                             lastTockenVarEFC = False
                     else:
+                        previousTocken = tockens[tockenNum - 1]
                         if currentTocken != "(":
                             error = True
-                            
+                        if previousTocken not in functionsGlobal.keys():
+                            error = True
                         openParenthesesEFC = True
             
 
+            #Checks the creation of functions
+            
+            if (workingOnNewFunction == True) or (currentTocken == "PROC"):
+                if currentTocken == "PROC":
+                    varGlobal[tockens[tockenNum + 1]] = tockens[tockenNum + 1]
+                    functionsGlobal[tockens[tockenNum + 1]] = []
+                    functionsGlobal[tockens[tockenNum + 1]].append([])
+                    nameFunctionCFC = tockens[tockenNum + 1]
+                    workingOnNewFunction = True
+                    openParametersCFC = True
+                    workingOnParametersCFC = True
+                    tockenNum += 2
+                    continue
+                else:
+                    
+                    if workingOnParametersCFC == True:
+                        if workingOnParametersCFC == True and openParametersCFC == True and currentTocken != "(":
+                            error = True
+                            
+                        elif workingOnParametersCFC == True:
+                            if openParametersCFC == True and currentTocken == "(":
+                                openParametersCFC = False
+                                nextTocken = tockens[tockenNum + 1]
+                                if nextTocken != ")":
+                                    workingOnParametersCFC = True
+                                else:
+                                    workingOnParametersCFC = False
+                            elif workingOnParametersCFC == True and (lastTockenCommaCFC == True or lastTockenVarCFC == False):
+                                # adding variables from the parameters
+                                varGlobal[currentTocken] = None
+                                functionsGlobal[nameFunctionCFC][-1].append("int_type")
+                                
+                                lastTockenVarCFC = True
+                                lastTockenCommaCFC = False
+                            elif workingOnParametersCFC == True and (lastTockenCommaCFC == False or lastTockenVarCFC == True):
+                                if currentTocken == ",":
+                                    lastTockenVarCFC = False
+                                    lastTockenCommaCFC = True
+                                elif currentTocken == ")":
+                                    lastTockenVarCFC = False
+                                    lastTockenCommaCFC = False
+                                    
+                                    workingOnParametersCFC = False
+                                    openCurlyBracketCFC = True
+                                    
+                                else:
+                                    error = True
+                                    
+                    elif openCurlyBracketCFC == True:
+                        
+                        if workingOnBodyCFC == False and currentTocken != "{":
+                            error = True
+
+                        else:
+                            if workingOnBodyCFC == False and currentTocken == "{":
+                                workingOnBodyCFC = True
+                            else:
+                                if currentTocken in ["fi", "od", ")"]:
+                                    nextClose = True
+                                elif nextClose == True:
+                                    if currentTocken == ";":
+                                        nextClose = False
+                                    elif currentTocken == "}":
+                                        nextTocken = tockens[tockenNum + 1]
+                                        if nextTocken != "CORP":
+                                            error = True
+                                            
+                                        else:
+                                            openParametersCFC = False
+                                            workingOnParametersCFC = False
+                                            lastTockenCommaCFC = False
+                                            lastTockenVarCFC = False
+                                            openCurlyBracketCFC = False
+                                            nameFunctionCFC = ""
+                                            workingOnBodyCFC = False
+                                            nextClose = False
+                                    else:
+                                        error = True
+                if currentTocken == "CORP":
+                    workingOnNewFunction = False
+            
+            # Check conditionals
+            if (workingOnConditional == True) or (currentTocken == "if"):
+                if currentTocken == "if":
+                    workingOnConditional = True
+                    openConditionalCSC = True
+                    buildingConditionalCSC = True
+                else:
+                    
+                    # build conditionals
+                    if buildingConditionalCSC:
+                        if openConditionalCSC == True and currentTocken != "(":
+                            error = True
+                        elif (openConditionalCSC == False) or (openConditionalCSC == True and currentTocken == "("):
+                            if currentTocken == "(":
+                                if tockens[tockenNum + 1] == ")":
+                                    error = True
+                                    
+                                openConditionalCSC = False
+                            elif conditionalCheck == False and tockens[tockenNum - 1] == "(":
+                                conditionalCheck = True
+                                if currentTocken not in compFunctions.keys():
+                                    error = True
+                                    
+                            elif currentTocken == ")":
+                                if closedParenthesesCSC == False and currentTocken == ")" and tockens[tockenNum + 1] == ")":
+                                    closedParenthesesCSC = True
+                                    openInstructionsCSC = True
+                                    buildingInstructionsCSC = True
+                                    buildingConditionalCSC = False
+                                    tockenNum += 2
+                                    continue
+                                elif closedParenthesesCSC == False:
+                                    error = True
+                                    
+                                    
+                    # build instructions
+                    elif buildingInstructionsCSC:
+                        if openInstructionsCSC == True and currentTocken != "{":
+                            error = True
+                        elif (openInstructionsCSC == False) or openInstructionsCSC == True and currentTocken == "{":
+                            if currentTocken == "{":
+                                if tockens[tockenNum + 1] == "}":
+                                    error = True
+                                    
+                                openInstructionsCSC = False
+                            elif instructionCheckCSC == False and tockens[tockenNum - 1] == "{":
+                                instructionCheckCSC = True
+                                if currentTocken not in functionsGlobal.keys(): # importante modificar
+                                    error = True
+                                    
+                            elif currentTocken == "}":
+                                if closedCurlyBracketsCSC == False and currentTocken == "}" and (tockens[tockenNum + 1] == "fi" or tockens[tockenNum + 1] == "else"):
+                                    if tockens[tockenNum + 1] == "else":
+                                        openConditionalCSC = True
+                                        openInstructionsCSC = False
+                                        buildingConditionalCSC = True
+                                        buildingInstructionsCSC = False
+                                        closedParenthesesCSC = False
+                                        conditionalCheck = False
+                                        instructionCheckCSC = False
+                                        closedCurlyBracketsCSC = False
+                                        tockenNum += 2
+                                        continue
+                                    workingOnConditional = False
+                                    openConditionalCSC = False
+                                    openInstructionsCSC = False
+                                    buildingConditionalCSC = False
+                                    buildingInstructionsCSC = False
+                                    closedParenthesesCSC = False
+                                    conditionalCheck = False
+                                    instructionCheckCSC = False
+                                    closedCurlyBracketsCSC = False
+                                    
+                                elif closedCurlyBracketsCSC == False:
+                                    error = True
+
+            # Check if program started running
+            if theProgramIsRunning == False:    
+                if currentTocken == "=" and tockens[tockenNum - 1] not in varGlobal:
+                    error = True
+                if currentTocken in varGlobal and varGlobal[currentTocken] == None and tockens[tockenNum + 1] == "=":
+                    if isNumber(tockens[tockenNum + 2]) == False:
+                        error = True
+                    varGlobal[currentTocken] = tockens[tockenNum + 2]
+                    if tockens[tockenNum + 3] != ";" and tockens[tockenNum + 3] != "}":
+                        error = True
+                    tockenNum += 3
+                    continue
+                elif currentTocken in varGlobal and varGlobal[currentTocken] == None and tockens[tockenNum + 1] != "=":
+                    error = True
+                if currentTocken in ["fi", "od", ")"]:
+                    nextClose = True
+                elif nextClose == True:
+                    if currentTocken == ";":
+                        nextClose = False
+                    elif currentTocken == "}":
+                        pass
+                    else:
+                        error = True
+            
+            if currentTocken == "{" and (workingOnVar == False and wokingOnDeclaredFunctions == False and workingOnNewFunction == False and workingOnConditional == False):
+                    theProgramIsRunning = False      
+        else:
+            error = True
         if error == True:
-            print("esta mal")
-            break
-            
-            
+            break    
         tockenNum += 1
-    
     return error
-
-
 
 """
 Useful functions
@@ -267,6 +475,6 @@ def checkVarType(val: str, val_type: str):
 
 def validVariableName(varName: str):
     varIsNumber = isNumber(varName)
-    if (varIsNumber) or (isNumber(varName[0])) or (len(varName) < 1) or (varName in reservedChars) or (varName in reservedNames) or (varName in varGlobal.keys()) or (varName in functionsGlobal.keys()) or ("," in varName) or (";" in varName) or ("{" in varName) or ("}" in varName) or ("(" in varName) or (")" in varName) or ("." in varName):
+    if (varIsNumber) or (isNumber(varName[0])) or (len(varName) < 1) or (varName in reservedChars) or (varName in reservedNames) or ("," in varName) or (";" in varName) or ("{" in varName) or ("}" in varName) or ("(" in varName) or (")" in varName) or ("." in varName): # or (varName in varGlobal.keys()) or (varName in functionsGlobal.keys())
         return False
     return True
