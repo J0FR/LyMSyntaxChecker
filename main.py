@@ -12,7 +12,7 @@ def main(filename):
     if tockens == False:
         return True
     
-    # print(tockens)
+    print(tockens)
         
     return u.parser(tockens)
     
