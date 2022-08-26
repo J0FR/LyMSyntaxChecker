@@ -169,80 +169,7 @@ def parser(tockens: list):
             
             
             
-            # Check conditionals
-            if (workingOnLoop == True) or (currentTocken == "while"):
-                if currentTocken == "while":
-                    workingOnLoop = True
-                    openConditionalLoop = True
-                    buildingConditionalLoop = True
-                else:
-                    
-                    # build conditionals
-                    if buildingConditionalLoop:
-                        if openConditionalLoop == True and currentTocken != "(":
-                            error = True
-                            print("23")
-                        elif (openConditionalLoop == False) or (openConditionalLoop == True and currentTocken == "("):
-                            if currentTocken == "(":
-                                if tockens[tockenNum + 1] == ")":
-                                    error = True
-                                    print("24")
-                                    
-                                openConditionalLoop = False
-                            elif conditionalCheckLoop == False and tockens[tockenNum - 1] == "(":
-                                conditionalCheckLoop = True
-                                if currentTocken not in compFunctions.keys():
-                                    error = True
-                                    print("25")
-                                    
-                            elif currentTocken == ")":
-                                if closedParenthesesLoop == False and currentTocken == ")" and tockens[tockenNum + 1] == ")" and tockens[tockenNum + 2] == "do":
-                                    closedParenthesesLoop = True
-                                    openInstructionsLoop = True
-                                    buildingInstructionsLoop = True
-                                    buildingConditionalLoop = False
-                                    tockenNum += 3
-                                    continue
-                                elif closedParenthesesLoop == False:
-                                    error = True
-                                    print("26")
-               
-                                    
-                    # build instructions
-                    elif buildingInstructionsLoop:
-                        if openInstructionsLoop == True and currentTocken != "{":
-                            error = True
-                            print("27")
-                        elif (openInstructionsLoop == False) or openInstructionsLoop == True and currentTocken == "{":
-                            if currentTocken == "{":
-                                if tockens[tockenNum + 1] == "}":
-                                    error = True
-                                    print("28")
-                                    
-                                openInstructionsLoop = False
-                            elif instructionCheckLoops == False and tockens[tockenNum - 1] == "{":
-                                instructionCheckLoops = True
-                                if currentTocken not in functionsGlobal.keys(): # importante modificar
-                                    error = True
-                                    
-                                    print("29")
-                                    
-                            elif currentTocken == "}":
-                                if closedCurlyBracketsLoop == False and currentTocken == "}" and (tockens[tockenNum + 1] == "od"):
-                                    workingOnLoop = False
-                                    openConditionalLoop = False
-                                    openInstructionsLoop = False
-                                    buildingConditionalLoop = False
-                                    buildingInstructionsLoop = False
-                                    closedParenthesesLoop = False
-                                    conditionalCheckLoop = False
-                                    instructionCheckLoops = False
-                                    closedCurlyBracketsLoop = False
-                                    
-                                elif closedCurlyBracketsLoop == False:
-                                    error = True
-                                    
-                                    print("30")
+
             
             
             
@@ -408,7 +335,7 @@ def parser(tockens: list):
 
             #Checks the creation of functions
             
-            if (workingOnNewFunction == True) or (currentTocken == "PROC"):
+            if ((workingOnNewFunction == True) or (currentTocken == "PROC")) and workingOnLoop == False:
                 if currentTocken == "PROC":
                     varGlobal[tockens[tockenNum + 1]] = tockens[tockenNum + 1]
                     functionsGlobal[tockens[tockenNum + 1]] = []
@@ -577,6 +504,82 @@ def parser(tockens: list):
                                     
                                 elif closedCurlyBracketsCSC == False:
                                     error = True
+                                    print("30")
+
+
+            # Check conditionals
+            if (workingOnLoop == True) or (currentTocken == "while"):
+                if currentTocken == "while":
+                    workingOnLoop = True
+                    openConditionalLoop = True
+                    buildingConditionalLoop = True
+                else:
+                    
+                    # build conditionals
+                    if buildingConditionalLoop:
+                        if openConditionalLoop == True and currentTocken != "(":
+                            error = True
+                            print("23")
+                        elif (openConditionalLoop == False) or (openConditionalLoop == True and currentTocken == "("):
+                            if currentTocken == "(":
+                                if tockens[tockenNum + 1] == ")":
+                                    error = True
+                                    print("24")
+                                    
+                                openConditionalLoop = False
+                            elif conditionalCheckLoop == False and tockens[tockenNum - 1] == "(":
+                                conditionalCheckLoop = True
+                                if currentTocken not in compFunctions.keys():
+                                    error = True
+                                    print("25")
+                                    
+                            elif currentTocken == ")":
+                                if closedParenthesesLoop == False and currentTocken == ")" and tockens[tockenNum + 1] == ")" and tockens[tockenNum + 2] == "do":
+                                    closedParenthesesLoop = True
+                                    openInstructionsLoop = True
+                                    buildingInstructionsLoop = True
+                                    buildingConditionalLoop = False
+                                    tockenNum += 3
+                                    continue
+                                elif closedParenthesesLoop == False:
+                                    error = True
+                                    print("26")
+               
+                                    
+                    # build instructions
+                    elif buildingInstructionsLoop:
+                        if openInstructionsLoop == True and currentTocken != "{":
+                            error = True
+                            print("27")
+                        elif (openInstructionsLoop == False) or openInstructionsLoop == True and currentTocken == "{":
+                            if currentTocken == "{":
+                                if tockens[tockenNum + 1] == "}":
+                                    error = True
+                                    print("28")
+                                    
+                                openInstructionsLoop = False
+                            elif instructionCheckLoops == False and tockens[tockenNum - 1] == "{":
+                                instructionCheckLoops = True
+                                if currentTocken not in functionsGlobal.keys(): # importante modificar
+                                    error = True
+                                    
+                                    print("29")
+                                    
+                            elif currentTocken == "}":
+                                if closedCurlyBracketsLoop == False and currentTocken == "}" and (tockens[tockenNum + 1] == "od"):
+                                    workingOnLoop = False
+                                    openConditionalLoop = False
+                                    openInstructionsLoop = False
+                                    buildingConditionalLoop = False
+                                    buildingInstructionsLoop = False
+                                    closedParenthesesLoop = False
+                                    conditionalCheckLoop = False
+                                    instructionCheckLoops = False
+                                    closedCurlyBracketsLoop = False
+                                    
+                                elif closedCurlyBracketsLoop == False:
+                                    error = True
+                                    
                                     print("30")
 
             # Check if program started running
