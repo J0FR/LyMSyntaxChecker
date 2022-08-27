@@ -8,17 +8,20 @@ def main(filename):
     # Converts txt file str into a list with the tockens that made up the program
     tockens = u.lexer(txt)
     # Checks for PROG and GORP and limit the instructions
-    tockens = u.programStartEnd(tockens)
-    print(tockens)
-    if tockens == False:
+    tockens, tockensProgramRun = u.programStartEnd(tockens)
+    # print(tockensProgramRun)
+    # print()
+    # print(tockens)
+    if tockens == False or tockensProgramRun == False: # 
         return True
     
     
-        
-    return u.parser(tockens)
+    if u.parser(tockens) == True or u.runProgram(tockensProgramRun) == True:
+        return True
+    return False
     
 
-filename = 'test2'
+filename = 'main_prueba'
 result = main(filename)
 if result == False:
     print(f"El programa esta bien :)")

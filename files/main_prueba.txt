@@ -41,7 +41,8 @@ putCB(2,1);
 xaeA12=1;
 a1b2=2;
 turnWalk(xaeA12, 1, a1b2);		
-chips(north)
+chips(north);
+goNorth()
 }
 
 GORP
