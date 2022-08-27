@@ -102,14 +102,11 @@ def runProgram(tockens: list):
                 verifyExistingFunctions(currentTocken, workingOnExistingFunctionsChecks, workingOn, programError, usingFunction)
             if currentTocken in varGlobal and (tockens[tockenNum - 1] != ";" and tockens[tockenNum - 1] != "{" and workingOn[1] == False):
                 programError[0] = True
-                print("ERROR-32")
             elif currentTocken in functionsGlobal.keys() and (tockens[tockenNum - 1] != ";" and tockens[tockenNum - 1] != "{"):
                 programError[0] = True
-                print("ERROR-33")
             elif currentTocken == ";" or currentTocken == "}":
                 if tockens[tockenNum - 1] != ")" and isNumber(tockens[tockenNum - 1]) == False:
                     programError[0] = True
-                    print("ERROR-34")
             if currentTocken == "}":
                 pass
         else:
@@ -126,15 +123,12 @@ def parser(tockens: list):
     tockenNum = 0
     closeParenthesesChecker = False
     
-    # print(tockens)
     while tockenNum < len(tockens):
         currentTocken = tockens[tockenNum]
         if programError[0] == False and (currentTocken in reservedNames or currentTocken in reservedChars or (isWorking(workingOn) and validVariableName(currentTocken)) or (isWorking(workingOn) and isNumber(currentTocken))):
             if currentTocken == "not" and tockens[tockenNum + 1] == "(":
-                # print("llegueeee")
                 closeParenthesesChecker = True
                 tockenNum += 2
-                # print(tockens[tockenNum])
             if closeParenthesesChecker == True and currentTocken == ")":
                 closeParenthesesChecker = False
                 tockenNum += 1
@@ -153,8 +147,6 @@ def parser(tockens: list):
             break
         tockenNum += 1
     if programError[0] == True:
-        print("Master Error")
-        print(currentTocken)
         return True
     else:
         return False
@@ -216,7 +208,6 @@ def FunctionCreation(currentTocken: str, checks: list, workingOn: list, programE
     
     else:
         programError[0] = True
-        print("ERROR-9")
 
 # InstructionBlockFunctionCreation
 # checks: var0: check { character | var1: checks the current instruction structure | var2: checks that existingFunctionsChecking is done
@@ -264,7 +255,6 @@ def instructionBlockFunctionCreation(currentTocken: str, checks: list, workingOn
         pass
     else:
         programError[0] = True
-        print("ERROR-10")
         
 # Variable0: verificacion coorchete | Variable1: Finalizo verificacion funcion
 def verifyInstructionBlockLoopsAndConditionals(currentTocken: str, checks: list, workingOn: list, programError: bool):
@@ -283,7 +273,6 @@ def verifyInstructionBlockLoopsAndConditionals(currentTocken: str, checks: list,
         checks[1] = True
     else:
         programError[0] = True
-        print("ERROR-4")
 
 # check if conditionals
 # checks: var0 - check the open conditional
@@ -321,8 +310,6 @@ def verifyConditionalsDeclaration(currentTocken: str, checks: list, workingOn: l
         pass
     else:
         programError[0] = True
-        print("ERROR-7")
-        print(currentTocken)
 
 # check repeat
 # checks: var0: check while keyword | var1: conditionals start | var2: verify the do keyword after conditional | var3: check start of instruction block
@@ -348,13 +335,10 @@ def verifyRepeat(currentTocken: str, checks: list, workingOn: list, programError
         workingOn[8] = False
     else:
         programError[0] = True
-        print("ERROR-6")
 
 # check while loops
 # checks: var0: check while keyword | var1: conditionals start | var2: verify the do keyword after conditional | var3: check start of instruction block
 def verifyLoopsDeclaration(currentTocken: str, checks: list, workingOn: list, programError: bool):
-    #print(currentTocken)
-    #print(workingOn[3])
     if currentTocken == "while" and checks[0] == False:
         workingOn[4] = True
         checks[0] = True
@@ -381,7 +365,6 @@ def verifyLoopsDeclaration(currentTocken: str, checks: list, workingOn: list, pr
         workingOn[4] = False
     else:
         programError[0] = True
-        print("ERROR-6")
 
 def verifyVariableDeclaraction(currentTocken: str, checks: list, workingOn: list, programError: bool):
     if workingOn[0] == False and currentTocken == "var":
@@ -397,7 +380,6 @@ def verifyVariableDeclaraction(currentTocken: str, checks: list, workingOn: list
         workingOn[0] = False
     else:
         programError[0] = True
-        print("ERROR-1")
         workingOn[0] = False
   
     # Variable 0: openParentesis | Variable 1: checkingVariables | Variable 2: variableCounter | Variable3: lastTockenVariable | variable4: started
@@ -416,8 +398,6 @@ def verifyExistingFunctions(currentTocken: str, checks: list, workingOn: list, p
     elif currentTocken == ")":
         if checks[2] not in usingFunction:
             programError[0] = True
-            print("ERROR-2")
-            print(currentTocken)
         checks[0] = False
         checks[1] = False
         checks[2] = 0
@@ -426,8 +406,6 @@ def verifyExistingFunctions(currentTocken: str, checks: list, workingOn: list, p
         workingOn[1] = False
     else:
         programError[0] = True
-        print("ERROR-3")
-        print(currentTocken)
         checks[0] = False
         checks[1] = False
         checks[2] = 0
@@ -455,8 +433,6 @@ def verifyConditionBlockLoopsAndConditionals(currentTocken: str, checks: list, w
             checks[2] = 0 
     else:
         programError[0] = True
-        print("ERROR-5")
-        print(currentTocken)
 
 def lexer(txt: str):
     tockens = " ".join(txt).replace(" ", "#").replace("(", "_(_").replace(")", "_)_").replace("{", "_{_").replace("}", "_}_").replace(",", "_,_").replace(";", "_;_").replace("=", "_=_")
@@ -503,8 +479,6 @@ def programStartEnd(tockens: list):
             tockenNum += 1
         tockens = tockens[startStatement + 1:endStatement ]
     except Exception as e: 
-        print(tockens[tockenNum])
-        print(e)
         return False, False
     return tockens, tockensProgramRun
 
