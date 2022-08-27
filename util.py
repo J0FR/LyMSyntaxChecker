@@ -91,11 +91,7 @@ Main Functions
 """
 def runProgram(tockens: list):
     tockenNum = 0
-    
     usingFunction = None
-    started = True
-    print(tockens)
-    
     while tockenNum < len(tockens):
         currentTocken = tockens[tockenNum]
         if programError[0] == False and (currentTocken in reservedChars or currentTocken in reservedNames or currentTocken in varGlobal or currentTocken in functionsGlobal.keys() or isNumber(currentTocken) or currentTocken == "[default]"): 
@@ -110,7 +106,6 @@ def runProgram(tockens: list):
             elif currentTocken in functionsGlobal.keys() and (tockens[tockenNum - 1] != ";" and tockens[tockenNum - 1] != "{"):
                 programError[0] = True
                 print("ERROR-33")
-                # print(tockens[tockenNum - 1])
             elif currentTocken == ";" or currentTocken == "}":
                 if tockens[tockenNum - 1] != ")" and isNumber(tockens[tockenNum - 1]) == False:
                     programError[0] = True
@@ -419,7 +414,6 @@ def verifyExistingFunctions(currentTocken: str, checks: list, workingOn: list, p
     elif checks[1] == True and checks[3] == True and currentTocken == ",":
         checks[3] = False
     elif currentTocken == ")":
-        print(f"check2 {checks[2]}")
         if checks[2] not in usingFunction:
             programError[0] = True
             print("ERROR-2")

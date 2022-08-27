@@ -1,4 +1,3 @@
-
 PROG
 
 var name1, xaeA12, a1b2, c;
