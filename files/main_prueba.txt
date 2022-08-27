@@ -1,23 +1,19 @@
+
 PROG
-var name1, xaeA12, a1b2, p;
-PROC putCB(c, b) 
+
+var name1, xaeA12, a1b2, c;
+
+PROC fullTurn () 
 {
-   repeatTimes 4 {walk(north,1)} per;
-   drop(c);
-	free(b);
-	walk(a1b2)
+	repeatTimes 4 {canWalk(front,a)} per;
+	drop(2);
+	free(2);
+	walk(3)
 } CORP
 
-PROC turnWalk(anuel, z, o)
+PROC turnWalk(anuel, b, i)
 {
-   if (not(canWalk(front, Z))) {veer(right)} else {drop(1);walk(z);free(anuel)} fi
-} CORP
-
-PROC goNorth()
-{
-   
-   while (canWalk(north,1)) do { walk(north,1)} od
-
+   if ( not(canWalk(front,a))) {veer(right)} else {drop(1);walk(b);free(anuel)} fi
 } CORP
 
 PROC chips(d)
@@ -26,23 +22,12 @@ PROC chips(d)
 } CORP
 
 
-PROC goWest(b, a)
 {
-   
-   if (canWalk(west,1))  { walk(west,1)} fi
-
-} CORP
-
-
-{
-go(3,3);
-name1=6;
-putCB(2,1);
-xaeA12=1;
-a1b2=2;
-turnWalk(xaeA12, 1, a1b2);		
-chips(north);
-goNorth()
+	xaeA12=1;
+	a1b2=2;
+	turnWalk(xaeA12, 1, a1b2);		
+	chips(north);
+	fullTurn()
 }
 
 GORP
