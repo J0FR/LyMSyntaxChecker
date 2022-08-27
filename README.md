@@ -1,4 +1,4 @@
-# LyMSyntaxChecker | Proyect #0 Languages & Machines (LyM)
+# LyMSyntaxChecker | Proyect #0 Languages & Machines
 The task of this project is to use Python or Java to implement a simple yes/no parser. The program should read a text that contains a program for the robot, and verify whether the syntax is correct.
 You must verify that used function names and variable names have been previously defined or in the case of functions, that they are the function's arguments. You must allow recursion.
 Spaces and tabulators are separators and should be ignored (outside of instructions).
