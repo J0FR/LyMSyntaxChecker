@@ -9,10 +9,11 @@ def main(filename):
     tockens = u.lexer(txt)
     # Checks for PROG and GORP and limit the instructions
     tockens = u.programStartEnd(tockens)
+    print(tockens)
     if tockens == False:
         return True
     
-    print(tockens)
+    
         
     return u.parser(tockens)
     

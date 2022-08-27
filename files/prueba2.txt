@@ -1,0 +1,33 @@
+
+PROG
+
+var name1, xaeA12, a1b2, c;
+
+PROC fullTurn () 
+{
+	repeatTimes 4 {veer(left)} per;
+	drop(c);
+	free(b);
+	walk(n)
+} CORP
+
+PROC turnWalk(anuel, b, c)
+{
+   if ( not(canWalk(front,a))) {veer(right)} else {drop(1);walk(b);free(anuel)} fi
+} CORP
+
+PROC chips(d)
+{ 
+	if (canWalk(d,1))  {drop(1); walk(d,1); drop(2)} fi
+} CORP
+
+
+{
+	xaeA12=1;
+	a1b2=2;
+	turnWalk(xaeA12,1, 	a1b2);		
+	chips(north);
+	fullTurn()
+}
+
+GORP

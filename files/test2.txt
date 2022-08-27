@@ -1,21 +1,31 @@
 PROG
-var n, x, y;
-PROC putCB(c, b)
+PROC putCB(c, b) 
 {
-    drop(c);
-    free(b);
-    walk(n)    
-} CORP
-PROC goNorth()
-{
-    while (canWalk(north, 1)) do { walk(north, 1) } od
+   if (not(canWalk(front,c))) {veer(right)} else {drop(1);walk(b);free(b)} fi; 
+   repeatTimes 4 {veer(left)} per;
+   walk(c);
+   if (canWalk(west,1))  { walk(west,1)} fi
+
+   
 } CORP
 
-
+PROC adasfasd(c, b) 
 {
-    walk(3, 3);
-    n = 6;
-    putCB(2, 1)
-} 
+   while (canWalk(north,1)) do { walk(north,1)} od;
+   walk(c);
+   if (canWalk(west,1))  { walk(west,1)} fi
 
+
+}
+CORP
+{
+go(3,3);
+n=6;
+putCB(2,1)
+
+
+}
+
+   
+} CORP
 GORP
