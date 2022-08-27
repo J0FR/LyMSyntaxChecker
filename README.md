@@ -5,10 +5,6 @@ Spaces and tabulators are separators and should be ignored (outside of instructi
 <br>
 ![alt text](https://github.com/J0FR/LyMSyntaxChecker/blob/main/tutorial_photos/valid_syntax.png)
 
-## Group Members:
-* Jose David Florez Ruiz - 202121507
-- Daniel Clavijo
-
 ## How to run:
 1. Put the file you want to test in the files folder
 ![alt text](https://github.com/J0FR/LyMSyntaxChecker/blob/main/tutorial_photos/step1.png)
@@ -19,3 +15,7 @@ Spaces and tabulators are separators and should be ignored (outside of instructi
 4. See if your file has a valid syntax or not
 * In the case the syntax is correct: ![alt text](https://github.com/J0FR/LyMSyntaxChecker/blob/main/tutorial_photos/step4.png)
 * In the case the syntax is correct: ![alt text](https://github.com/J0FR/LyMSyntaxChecker/blob/main/tutorial_photos/step4.1.png)
+
+## Group Members:
+* Jose David Florez Ruiz - 202121507
+- Daniel Clavijo
